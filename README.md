@@ -1,4 +1,4 @@
-# miniPoroject
+# miniProject
 
 ## Clone repo
 ```shell
