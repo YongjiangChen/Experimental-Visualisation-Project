@@ -1,5 +1,11 @@
 # miniProject
 
+## Project Introduction
+
+## Contributors
+
+
+
 ## Clone repo
 ```shell
 git clone "https://github.com/YongjiangChen/miniPoroject.git"
