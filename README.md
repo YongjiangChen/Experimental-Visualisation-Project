@@ -1,16 +1,18 @@
 # miniProject
 
 ## Project Introduction
+This is a mini Django project in preparation for the 2022/23 Honours Project, presenting (1) an Intraday Candlestick Graph for S&P 500 Index at 5-min interval (2) Spider-web graph/ Radar map (3) Daily Close prices for S&P 500 stocks in information technology and financials sector Graph. 
 
-## Contributors
+## Authors
 
-
+Hailey, Sami, Yong
 
 ## Clone repo
 ```shell
 git clone "https://github.com/YongjiangChen/miniPoroject.git"
 ```
 ## Installation
+In the cloned folder, open a terminal where requirements.txt is
 
 ```shell
 pip install -r requirements.txt
@@ -23,7 +25,7 @@ python manage.py runserver
 ```
 Ctrl Click on the local server link poped in the terminal to open the web page
 
-## Commit
+## Commit to the project
 ```shell
 git add <file to be updated>
 ```
