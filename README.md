@@ -8,6 +8,7 @@ This is a mini Django project in preparation for the 2022/23 Honours Project, pr
 Hailey, Sami, Yong
 
 ## Project directory structure
+```text
 MiniProject
   |-- MiniProject
         |-- MiniProject
@@ -22,7 +23,7 @@ MiniProject
               |-- views.py
   |-- .env
   |-- manage.py
-
+```
 
 ## Clone repo
 ```shell
