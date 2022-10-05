@@ -24,6 +24,12 @@ MiniProject
   |-- .env
   |-- manage.py
 ```
+## Package Choices and Justification
+
+```text
+Yong: I initiated the website with django-echarts, a web scaffolding tool that integrates Pyechart to new Django projects. And I created the Intraday Candlestick Graph for S&P 500 Index with Pyechart, I chose Pyechart over other packages because it's quick to write and it supports dynamic, interactive graphs with creative theme palate. I wish to create 3D visuals and discover more possibilities for better data visualisation in the actual project. 
+
+```
 
 ## Clone repo
 ```shell
