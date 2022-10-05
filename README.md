@@ -44,7 +44,7 @@ python manage.py runserver
 ```
 Ctrl-Click on the local server link poped in the terminal to open the web page
 
-## Project update
+## Repo update
 ```shell
 git pull
 ```
