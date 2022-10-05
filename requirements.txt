@@ -1,3 +1,4 @@
 pyecharts
 django
 django-echarts
+python-decouple

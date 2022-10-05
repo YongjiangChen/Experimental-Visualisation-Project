@@ -46,23 +46,37 @@ prices = [[2320.26, 2320.26, 2287.3, 2362.94], [2300, 2291.3, 2288.26, 2308.38],
       [2309.16, 2286.6, 2264.83, 2333.29], [2282.17, 2263.97, 2253.25, 2286.33],
       [2255.77, 2270.28, 2253.31, 2276.22]]
 columnAverage = [sum(priceList) / len(priceList) for priceList in zip(*prices)],
-#print(columnAverage[0][1])
+max_value = max(sublist[0] for sublist in prices)
+
+def findDay(theList, price):
+    for ind in range(len(theList)):
+        if price in theList[ind]:
+            return ind
+
+max_value_day = findDay(prices, max_value)
+#print(max_value_day)
 
 @site_obj.register_chart(title='Time-series daily values (AAPL)', description = chart_description, catalog='Time-series intraday values')
 def mychart():
     candleStick = Kline().add_xaxis(
-        ["2022/9/{}".format(i + 1) for i in range(31)]
+        ["2022/9/{}".format(i + 1) for i in range(30)]
     ).add_yaxis(
-        'Candlestick Prices', prices
+        'Candlestick Prices', prices, itemstyle_opts=opts.ItemStyleOpts(color="#8fce00", color0="#ff3a3a", border_color="#8fce00", border_color0="#ff3a3a"),
     ).set_global_opts(
         title_opts=opts.TitleOpts(title="NASDAQ: AAPL", subtitle="Unit: USD"),
-        datazoom_opts=opts.DataZoomOpts(is_show=True, orient = "vertical", range_start = 1500, range_end =3000)).set_series_opts(
+        datazoom_opts=opts.DataZoomOpts(is_show = True, type_ = "inside", orient = "horizontal", range_start=1, range_end=200)).set_series_opts(
         markline_opts=opts.MarkLineOpts(
             data=[
-                opts.MarkLineItem(y=columnAverage[0][1], name="Close Price Average"),
+                opts.MarkLineItem(y=columnAverage[0][1], name="Close Price Average",)
+            ],
+            linestyle_opts=opts.LineStyleOpts( width = 2, type_ = "dashed", color="#5b5b5b")
+        ),
+        markpoint_opts=opts.MarkPointOpts(
+            data=[
+                opts.MarkPointItem(type_='max', value_dim='highest',  value=max_value, symbol_size=[80,50], name="Highest Price", itemstyle_opts=opts.ItemStyleOpts(color="#5b5b5b")),
+                #opts.MarkPointItem(coord=(max_value_day,max_value), value=max_value, symbol_size=[80,50], name="Highest Price"),
             ]
-        )
-        
+        ),
     )
     return candleStick
 
