@@ -50,6 +50,7 @@ git pull
 ```
 
 ## Commit to the project
+Upload on github or using git:
 ```shell
 git add <file to be updated>
 ```
