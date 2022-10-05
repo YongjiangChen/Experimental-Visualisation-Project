@@ -11,16 +11,16 @@ Hailey, Sami, Yong
 ```text
 MiniProject
   |-- MiniProject
-        |-- MiniProject
+        |-- MiniProject (Django project settings)
               |-- asgi.py
               |-- settings.py
               |-- urls.py
               |-- wsgi.py
-        |-- static
+        |-- static (Data Collection files)
               
-        |-- visual
+        |-- visual (Django app)
               |-- apps.py
-              |-- views.py
+              |-- views.py (website views)
   |-- .env
   |-- manage.py
 ```
