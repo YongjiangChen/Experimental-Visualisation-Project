@@ -1,13 +1,13 @@
 from operator import truediv
-from django_echarts.entities import Jumbotron, Copyright, LinkItem
+from django_echarts.entities import Jumbotron, LinkItem
 from django_echarts.starter.sites import DJESite, SiteOpts
 from django.urls import reverse_lazy
 from pyecharts import options as opts
-from pyecharts.charts import Bar
-from pyecharts.charts import Kline
-from pyecharts.components import Table
-from visual.monthlyDataApple import data
 
+from pyecharts.charts import Kline
+from pyecharts.charts import Bar3D
+from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
+from static.histdatascrape import Techlist, Finlist
 
 site_obj = DJESite(
     site_title='Mini Honours Project',
@@ -15,7 +15,8 @@ site_obj = DJESite(
     opts=SiteOpts(
         list_layout='grid',
         nav_shown_pages=[],
-        paginate_by=10
+        paginate_by=10,
+        #detail_tags_position = 'bottom'
     )
 )
 
@@ -25,28 +26,21 @@ site_obj.add_widgets(
     jumbotron=Jumbotron('S&P 500 data visualistion', main_text='mini group project - University of Edinburgh', small_text='10/2022'),
 )
 
-chart_description = ' Daily time-series Stock Price Data of Apple Inc (AAPL),  covering extended trading hours where applicable (e.g. 4:00am to 8:00pm Eastern Time for the US market)'
+site_obj.add_right_link(
+    LinkItem(text='Project Repo', url='https://github.com/YongjiangChen/miniProject', new_page=True)
+)
 
+candleStickDescription = 'This Chart is real-time. The S&P 500® Information Technology comprises those companies included in the S&P 500 that are classified as members of the GICS information technology sector.'
+candleStickDescription2 = 'This Chart is real-time. The S&P 500 Financials comprises those companies included in the S&P 500 that are classified as members of the GICS financials sector.'
+
+#########################################################################################################
 #make-up data, need to append real data from json dictionary to list of lists.
 # [open, close, lowest, highest] 
-prices = [[2320.26, 2320.26, 2287.3, 2362.94], [2300, 2291.3, 2288.26, 2308.38],
-      [2295.35, 2346.5, 2295.35, 2345.92], [2347.22, 2358.98, 2337.35, 2363.8],
-      [2360.75, 2382.48, 2347.89, 2383.76], [2383.43, 2385.42, 2371.23, 2391.82],
-      [2377.41, 2419.02, 2369.57, 2421.15], [2425.92, 2428.15, 2417.58, 2440.38],
-      [2411, 2433.13, 2403.3, 2437.42], [2432.68, 2334.48, 2427.7, 2441.73],
-      [2430.69, 2418.53, 2394.22, 2433.89], [2416.62, 2432.4, 2414.4, 2443.03],
-      [2441.91, 2421.56, 2418.43, 2444.8], [2420.26, 2382.91, 2373.53, 2427.07],
-      [2383.49, 2397.18, 2370.61, 2397.94], [2378.82, 2325.95, 2309.17, 2378.82],
-      [2322.94, 2314.16, 2308.76, 2330.88], [2320.62, 2325.82, 2315.01, 2338.78],
-      [2313.74, 2293.34, 2289.89, 2340.71], [2297.77, 2313.22, 2292.03, 2324.63],
-      [2322.32, 2365.59, 2308.92, 2366.16], [2364.54, 2359.51, 2330.86, 2369.65],
-      [2332.08, 2273.4, 2259.25, 2333.54], [2274.81, 2326.31, 2270.1, 2328.14],
-      [2333.61, 2347.18, 2321.6, 2351.44], [2340.44, 2324.29, 2304.27, 2352.02],
-      [2326.42, 2318.61, 2314.59, 2333.67], [2314.68, 2310.59, 2296.58, 2320.96],
-      [2309.16, 2286.6, 2264.83, 2333.29], [2282.17, 2263.97, 2253.25, 2286.33],
-      [2255.77, 2270.28, 2253.31, 2276.22]]
+prices = [[2320.26, 2320.26, 2287.3, 2362.94]]
 columnAverage = [sum(priceList) / len(priceList) for priceList in zip(*prices)],
 max_value = max(sublist[0] for sublist in prices)
+###########################################################################################################
+
 
 def findDay(theList, price):
     for ind in range(len(theList)):
@@ -56,30 +50,108 @@ def findDay(theList, price):
 max_value_day = findDay(prices, max_value)
 #print(max_value_day)
 
-@site_obj.register_chart(title='Time-series daily values (AAPL)', description = chart_description, catalog='Time-series intraday values')
-def mychart():
+timeAxis = []
+for i in range(9,17):
+    if i == 9:
+        for j in range(30,60,5):
+            timeAxis.append(str(i)+":"+str(j))
+    if i>9 and i<16:
+        for j in range(0,60,5):
+            timeAxis.append(str(i)+":"+str(j))
+    else:
+        for j in range(0,35,5):
+            timeAxis.append(str(i)+":"+str(j))
+
+
+@site_obj.register_chart(title='Intraday prices for S&P 500 Information Technology (Sector)', description = candleStickDescription, catalog='Data Visualisation')
+def mytechchart():
     candleStick = Kline().add_xaxis(
-        ["2022/9/{}".format(i + 1) for i in range(30)]
+        [timeAxis[i] for i in range(len(Techlist))]
     ).add_yaxis(
-        'Candlestick Prices', prices, itemstyle_opts=opts.ItemStyleOpts(color="#8fce00", color0="#ff3a3a", border_color="#8fce00", border_color0="#ff3a3a"),
+        'Candlestick Prices', Techlist, itemstyle_opts=opts.ItemStyleOpts(color="#8fce00", color0="#ff3a3a", border_color="#8fce00", border_color0="#ff3a3a"),
     ).set_global_opts(
-        title_opts=opts.TitleOpts(title="NASDAQ: AAPL", subtitle="Unit: USD"),
+        title_opts=opts.TitleOpts(title="INDEXSP: SP500-45", subtitle="Time interval: 5-min"),
         datazoom_opts=opts.DataZoomOpts(is_show = True, type_ = "inside", orient = "horizontal", range_start=1, range_end=200)).set_series_opts(
         markline_opts=opts.MarkLineOpts(
             data=[
-                opts.MarkLineItem(y=columnAverage[0][1], name="Close Price Average",)
+                opts.MarkLineItem(type_ = 'average', value_dim='close', name="Close Price Average",)
+                #opts.MarkLineItem(y=columnAverage[0][1], name="Overall Close Price Average",)
             ],
             linestyle_opts=opts.LineStyleOpts( width = 2, type_ = "dashed", color="#5b5b5b")
         ),
         markpoint_opts=opts.MarkPointOpts(
             data=[
                 opts.MarkPointItem(type_='max', value_dim='highest',  value=max_value, symbol_size=[80,50], name="Highest Price", itemstyle_opts=opts.ItemStyleOpts(color="#5b5b5b")),
-                #opts.MarkPointItem(coord=(max_value_day,max_value), value=max_value, symbol_size=[80,50], name="Highest Price"),
+                #opts.MarkPointItem(coord=(max_value_day,max_value), value=max_value, symbol_size=[80,50], name="Overall Highest Price"),
             ]
         ),
     )
     return candleStick
 
+@site_obj.register_chart(title='Intraday prices for S&P 500 Financials (Sector)', description = candleStickDescription2, catalog='Data Visualisation')
+def myfinchart():
+    candleStick2 = Kline().add_xaxis(
+        [timeAxis[i] for i in range(len(Techlist))]
+    ).add_yaxis(
+        'Candlestick Prices', Finlist, itemstyle_opts=opts.ItemStyleOpts(color="#8fce00", color0="#ff3a3a", border_color="#8fce00", border_color0="#ff3a3a"),
+    ).set_global_opts(
+        title_opts=opts.TitleOpts(title="INDEXSP: SP500-40", subtitle="Time interval: 5-min"),
+        datazoom_opts=opts.DataZoomOpts(is_show = True, type_ = "inside", orient = "horizontal", range_start=1, range_end=200)).set_series_opts(
+        markline_opts=opts.MarkLineOpts(
+            data=[
+                opts.MarkLineItem(type_ = 'average', value_dim='close', name="Close Price Average",)
+                #opts.MarkLineItem(y=columnAverage[0][1], name="Overall Close Price Average",)
+            ],
+            linestyle_opts=opts.LineStyleOpts( width = 2, type_ = "dashed", color="#5b5b5b")
+        ),
+        markpoint_opts=opts.MarkPointOpts(
+            data=[
+                opts.MarkPointItem(type_='max', value_dim='highest',  value=max_value, symbol_size=[80,50], name="Highest Price", itemstyle_opts=opts.ItemStyleOpts(color="#5b5b5b")),
+                #opts.MarkPointItem(coord=(max_value_day,max_value), value=max_value, symbol_size=[80,50], name="Overall Highest Price"),
+            ]
+        ),
+    )
+    return candleStick2
+
+description3D = "This page illustrate the EPS change in the TOP 5 S&P 500 entities over past 10 years, together they make up 17.5% of the S&P 500"
+
+#years = ["2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023"]
+equities = ["Apple", "Microsoft", "Alphabet", "Amazon", "Meta"]
+
+@site_obj.register_chart(title='Earnings per share', description = description3D, catalog='Data Visualisation')
+def Bar3Dchart():
+    c=(
+    Bar3D(init_opts=opts.InitOpts(width="900px", height="600px", bg_color="#f3f6f4",))
+    .add(
+        series_name="Earnings Per Share",
+        #data=listYearFirmEPS,
+        data = TOP5_EQUITY_EPS,
+        xaxis3d_opts=opts.Axis3DOpts(type_="category", name='Years',),
+        yaxis3d_opts=opts.Axis3DOpts(type_="category", data=equities, name='Top 5 Entities in S&P500', name_gap =40),
+        zaxis3d_opts=opts.Axis3DOpts(type_="value", name='EPS'),
+    )
+    .set_global_opts(
+        title_opts=opts.TitleOpts(title="3D Visualistion for change in Profitability", subtitle="Unit: USD"),
+        visualmap_opts=opts.VisualMapOpts(
+            max_=20,
+            range_color=[
+                "#313695",
+                "#4575b4",
+                "#74add1",
+                "#abd9e9",
+                "#e0f3f8",
+                "#ffffbf",
+                "#fee090",
+                "#fdae61",
+                "#f46d43",
+                "#d73027",
+                "#a50026",
+            ],
+        )
+    )
+
+)
+    return c
 
 
 
