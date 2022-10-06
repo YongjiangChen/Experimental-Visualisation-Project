@@ -17,10 +17,14 @@ MiniProject
               |-- urls.py
               |-- wsgi.py
         |-- static (Data Collection files)
-              
+              |-- AnualEPS.py 
+              ## EPS data collection via alpha vantage api, not reliable as alpha vantage limits the no. of daily api requests.
+              |-- histdatascrape.py 
+              ## S&P 500 data collection via yfinance api
         |-- visual (Django app)
               |-- apps.py
-              |-- views.py (website views)
+              |-- views.py 
+              ## website views
   |-- .env
   |-- manage.py
 ```
