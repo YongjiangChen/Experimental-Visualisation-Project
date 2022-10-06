@@ -2,3 +2,6 @@ pyecharts
 django
 django-echarts
 python-decouple
+pandas
+datetime
+json_flatten
