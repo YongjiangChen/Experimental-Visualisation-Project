@@ -6,8 +6,8 @@ from pyecharts import options as opts
 
 from pyecharts.charts import Kline
 from pyecharts.charts import Bar3D
-#from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
-#from static.histdatascrape import Techlist, Finlist
+from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
+from static.histdatascrape import Techlist, Finlist
 
 site_obj = DJESite(
     site_title='Mini Honours Project',
