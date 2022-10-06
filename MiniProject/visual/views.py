@@ -30,8 +30,8 @@ site_obj.add_right_link(
     LinkItem(text='Project Repo', url='https://github.com/YongjiangChen/miniProject', new_page=True)
 )
 
-candleStickDescription = 'This Chart is real-time. The S&P 500® Information Technology comprises those companies included in the S&P 500 that are classified as members of the GICS information technology sector.'
-candleStickDescription2 = 'This Chart is real-time. The S&P 500 Financials comprises those companies included in the S&P 500 that are classified as members of the GICS financials sector.'
+candleStickDescription = 'This Chart displays prices in real-time, you may click/scroll to move/zoom. The S&P 500® Information Technology comprises those companies included in the S&P 500 that are classified as members of the GICS information technology sector.'
+candleStickDescription2 = 'This Chart displays prices in real-time, you may click/scroll to move/zoom. The S&P 500 Financials comprises those companies included in the S&P 500 that are classified as members of the GICS financials sector.'
 
 #########################################################################################################
 #make-up data, need to append real data from json dictionary to list of lists.
@@ -53,17 +53,17 @@ max_value_day = findDay(prices, max_value)
 timeAxis = []
 for i in range(9,17):
     if i == 9:
-        for j in range(30,60,5):
+        for j in range(30,55,5):
             timeAxis.append(str(i)+":"+str(j))
     if i>9 and i<16:
-        for j in range(0,60,5):
+        for j in range(0,55,5):
             timeAxis.append(str(i)+":"+str(j))
     else:
         for j in range(0,35,5):
             timeAxis.append(str(i)+":"+str(j))
 
 
-@site_obj.register_chart(title='Intraday prices for S&P 500 Information Technology (Sector)', description = candleStickDescription, catalog='Data Visualisation')
+@site_obj.register_chart(title='Intraday prices for S&P 500 Information Technology Sector', description = candleStickDescription, catalog='Data Visualisation')
 def mytechchart():
     candleStick = Kline().add_xaxis(
         [timeAxis[i] for i in range(len(Techlist))]
@@ -88,7 +88,7 @@ def mytechchart():
     )
     return candleStick
 
-@site_obj.register_chart(title='Intraday prices for S&P 500 Financials (Sector)', description = candleStickDescription2, catalog='Data Visualisation')
+@site_obj.register_chart(title='Intraday prices for S&P 500 Financials Sector', description = candleStickDescription2, catalog='Data Visualisation')
 def myfinchart():
     candleStick2 = Kline().add_xaxis(
         [timeAxis[i] for i in range(len(Techlist))]
@@ -129,6 +129,7 @@ def Bar3Dchart():
         xaxis3d_opts=opts.Axis3DOpts(type_="category", name='Years',),
         yaxis3d_opts=opts.Axis3DOpts(type_="category", data=equities, name='Top 5 Entities in S&P500', name_gap =40),
         zaxis3d_opts=opts.Axis3DOpts(type_="value", name='EPS'),
+        grid3d_opts=opts.Grid3DOpts(is_rotate=True)
     )
     .set_global_opts(
         title_opts=opts.TitleOpts(title="3D Visualistion for change in Profitability", subtitle="Unit: USD"),
