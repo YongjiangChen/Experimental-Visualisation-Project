@@ -36,15 +36,15 @@ I initiated the website with django-echarts, a web scaffolding tool that integra
 
 **Hailey**: Responsible for live web scraping and data collection.
 ```txt
-**Collecting data**: I intend to capture the investment and loan data from Yahoo Finance websites as a data source, 
-basically every dimension and every format of data is available to facilitate the later operation. Yahoo has gone 
-to a Reactjs front end which means if you analyze the request headers from the client to the backend you can get 
-the actual JSON they use to populate the client side stores.
-**Formatting data**: Here I will divide the acquired data into xls, csv, sql, and pandas DataFrame format data, and 
-operate them separately to cope with various data source formats
-**Cleaning and organizing data**: excel, sql, python, javascript will be used
-**Statistical Analysing data**: mainly using pandas and sql in python.
-**Visualize data**: I will use django web development for visualisation (html, css, javascript)
+**Collecting data: I intend to capture the investment and loan data from Yahoo Finance websites as a data
+source, basically every dimension and every format of data is available to facilitate the later operation. 
+Yahoo has gone to a Reactjs front end which means if you analyze the request headers from the client to 
+the backend you can get the actual JSON they use to populate the client side stores.
+**Formatting data: Here I will divide the acquired data into xls, csv, sql, and pandas DataFrame format 
+data, and operate them separately to cope with various data source formats
+**Cleaning and organizing data: excel, sql, python, javascript will be used
+**Statistical Analysing data: mainly using pandas and sql in python.
+**Visualize data: I will use django web development for visualisation (html, css, javascript)
 ```
 
 **Sami** : Responsible for the Market Capatalization Diagram, Spiderweb graph.
