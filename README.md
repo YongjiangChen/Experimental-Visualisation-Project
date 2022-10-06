@@ -27,9 +27,19 @@ MiniProject
 ## Package choices and justification
 
 
-**Yong**:  I initiated the website with django-echarts, a web scaffolding tool that integrates Pyechart to new Django projects. I then created the Intraday Candlestick Graph for S&P 500 Index with Pyechart, I chose Pyechart over other packages because it's quick to write and it supports dynamic, interactive graphs with creative theme palate. I wish to create 3D visuals and discover more possibilities for better data visualisation in the actual project. 
+**Yong**:  Responsible for Django set-up, Intraday Candlestick Graphs.
+I initiated the website with django-echarts, a web scaffolding tool that integrates Pyechart to new Django projects. I then created the Intraday Candlestick Graph for S&P 500 Index with Pyechart, I chose Pyechart over other packages because it's quick to write and it supports dynamic, interactive graphs with creative theme palate. I wish to create 3D visuals and discover more possibilities for better data visualisation in the actual project. 
 
+**Hailey**: Responsible for live web scraping and data collection.
+```txt
+Collecting data: I intend to capture the investment and loan data from Yahoo Finance websites as a data source, basically every dimension and every format of data is available to facilitate the later operation. Yahoo has gone to a Reactjs front end which means if you analyze the request headers from the client to the backend you can get the actual JSON they use to populate the client side stores.
+Formatting data: Here I will divide the acquired data into xls, csv, sql, and pandas DataFrame format data, and operate them separately to cope with various data source formats
+Cleaning and organizing data: excel, sql, python, javascript will be used
+Statistical Analysing data: mainly using pandas and sql in python.
+Visualize data: I will use django web development for visualisation (html, css, javascript)
+```
 
+**Sami** : Responsible for the Market Capatalization Diagram, Spiderweb graph.
 
 ## Clone repo
 ```shell
