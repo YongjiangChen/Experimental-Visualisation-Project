@@ -6,8 +6,8 @@ from pyecharts import options as opts
 
 from pyecharts.charts import Kline
 from pyecharts.charts import Bar3D
-from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
-from static.histdatascrape import Techlist, Finlist
+#from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
+#from static.histdatascrape import Techlist, Finlist
 
 site_obj = DJESite(
     site_title='Mini Honours Project',
@@ -53,10 +53,10 @@ max_value_day = findDay(prices, max_value)
 timeAxis = []
 for i in range(9,17):
     if i == 9:
-        for j in range(30,55,5):
+        for j in range(30,60,5):
             timeAxis.append(str(i)+":"+str(j))
-    if i>9 and i<16:
-        for j in range(0,55,5):
+    elif i>9 and i<16:
+        for j in range(0,60,5):
             timeAxis.append(str(i)+":"+str(j))
     else:
         for j in range(0,35,5):
