@@ -3,11 +3,16 @@ from django_echarts.entities import Jumbotron, LinkItem
 from django_echarts.starter.sites import DJESite, SiteOpts
 from django.urls import reverse_lazy
 from pyecharts import options as opts
-
+from django_echarts.geojson import use_geojson, geojson_url
 from pyecharts.charts import Kline
 from pyecharts.charts import Bar3D
+from pyecharts.charts import Sankey, Map
+
+
 from static.AnualEPS import listYearFirmEPS, TOP5_EQUITY_EPS
 from static.histdatascrape import Techlist, Finlist
+import pandas as pd
+
 
 site_obj = DJESite(
     site_title='Mini Honours Project',
@@ -28,7 +33,7 @@ site_obj.add_widgets(
 
 site_obj.add_right_link(
     LinkItem(text='Project Repo', url='https://github.com/YongjiangChen/miniProject', new_page=True)
-)
+).add_left_link(LinkItem(text='Dashboard', url='/dashboard/'))
 
 candleStickDescription = 'This Chart displays prices in real-time, you may click/scroll to move/zoom. The S&P 500® Information Technology comprises those companies included in the S&P 500 that are classified as members of the GICS information technology sector.'
 candleStickDescription2 = 'This Chart displays prices in real-time, you may click/scroll to move/zoom. The S&P 500 Financials comprises those companies included in the S&P 500 that are classified as members of the GICS financials sector.'
@@ -153,6 +158,228 @@ def Bar3Dchart():
 
 )
     return c
+
+def get_data(df):
+    nodes =[]
+    for i in range(2):
+        vales=df.iloc[:,i].unique()
+        for value in vales:
+            dic={}
+            dic['name']=value
+            nodes.append(dic)
+             
+    nodes1 = []
+    for id in nodes:
+        if id not in nodes1:
+            nodes1.append(id)
+ 
+    links=[]
+    for i in df.values:
+        dic={}
+        dic['source']=i[0]
+        dic['target']=i[1]
+        dic['value']=i[2]
+        links.append(dic)
+    print(links)
+    return nodes1,links
+
+nodes_list = [
+ {'name': 'increase in NAHB Housing Market Index'},
+ {'name': 'increase in 3-Month Bill Auction'},
+ {'name': 'increase in 6-Month Bill Auction'},
+ {'name': 'increase in Crude Oil Inventories'},
+ {'name': 'rise in U.S. 20-Year Bond Auction'},
+ {'name': 'increase in Initial Jobless Claims'},
+ {'name': 'decrease in Natural Gas Storage'},
+ {'name': 'US FOMC meeting'},
+ {'name': 'Confidence for a  bull market'},
+ {'name': 'Confidence for a  bear market'},
+ {'name': 'Decrease in monthly PCE Price index'},
+ {'name': 'Decrease in monthly New Home Sales'},
+ {'name': 'Decrease in CB Consumer Confidence'},
+ {'name': 'Decrease in monthly Gasoline production'},
+ {'name': 'Decreas in US Producer Price Index'},
+ {'name': 'Increase in US Consumer Price Index'},
+ {'name': 'Bearish historical data input'},
+ {'name': 'Bullish historical data input'},
+ {'name': 'Drop in Gold Futures'},
+ {'name': 'change in data input range'},
+ {'name': 'Model A'},
+ {'name': 'Model C'},
+ {'name': 'Model D'},
+ {'name': 'Model B'}
+]
+
+links_list = [
+ {'source': 'Confidence for a  bull market', 'target': 'Model A', 'value': 80},
+ {'source': 'Confidence for a  bull market', 'target': 'Model B', 'value': 95},
+ {'source': 'Confidence for a  bull market', 'target': 'Model C', 'value': 91},
+ {'source': 'Confidence for a  bull market', 'target': 'Model D', 'value': 92},
+ {'source': 'Confidence for a  bear market', 'target': 'Model A', 'value': 20},
+ {'source': 'Confidence for a  bear market', 'target': 'Model B', 'value': 5},
+ {'source': 'Confidence for a  bear market', 'target': 'Model C', 'value': 9},
+ {'source': 'Confidence for a  bear market', 'target': 'Model D', 'value': 8},
+ {'source': 'Model A', 'target': 'increase in NAHB Housing Market Index', 'value': 10},
+ {'source': 'Model A', 'target': 'increase in 3-Month Bill Auction', 'value': 5},
+ {'source': 'Model A', 'target': 'increase in 6-Month Bill Auction', 'value': 3},
+ {'source': 'Model A', 'target': 'rise in U.S. 20-Year Bond Auction', 'value': 25},
+ {'source': 'Model A', 'target': 'Decrease in monthly Gasoline production', 'value': 30},
+ {'source': 'Model A', 'target': 'increase in NAHB Housing Market Index', 'value': 13},
+ {'source': 'Model A', 'target': 'Decrease in monthly PCE Price index', 'value': 7},
+ {'source': 'Model B', 'target': 'Drop in Gold Futures', 'value': 27},
+ {'source': 'Model B', 'target': 'Bullish historical data input', 'value': 13},
+ {'source': 'Model B', 'target': 'rise in U.S. 20-Year Bond Auction', 'value': 26},
+ {'source': 'Model B', 'target': 'increase in Crude Oil Inventories', 'value': 40},
+ {'source': 'Model C', 'target': 'change in data input range', 'value': 14},
+ {'source': 'Model C', 'target': 'Bearish historical data input', 'value': 16},
+ {'source': 'Model C', 'target': 'Increase in US Consumer Price Index', 'value': 8},
+ {'source': 'Model C', 'target': 'Decreas in US Producer Price Index', 'value': 2},
+ {'source': 'Model D', 'target': 'Decrease in CB Consumer Confidence', 'value': 1},
+ {'source': 'Model D', 'target': 'US FOMC meeting', 'value': 9},
+ {'source': 'Model D', 'target': 'rise in U.S. 20-Year Bond Auction', 'value': 17},
+ {'source': 'Model D', 'target': 'Increase in US Consumer Price Index', 'value': 25},
+ {'source': 'Model D', 'target': 'decrease in Natural Gas Storage', 'value': 30},
+ {'source': 'Model D', 'target': 'Decrease in monthly New Home Sales', 'value': 5}
+
+]
+
+@site_obj.register_chart(title='Sankey diagram for model comparison',  catalog='Data Visualisation')
+def get_tu():
+    sankey = (
+        Sankey(init_opts=opts.InitOpts(width="1500px", height="600px"))
+        .add(
+            "",
+            nodes_list,
+            links_list,
+            pos_top="10%",
+            node_width = 30,  
+            node_gap= 12, 
+            is_draggable = True,
+            is_selected = True,
+            layout_iterations = 5,
+            # focus_node_adjacency=True,
+            itemstyle_opts=opts.ItemStyleOpts(border_width=2, border_color="#aaa"),
+            linestyle_opt=opts.LineStyleOpts(opacity=0.8, curve=0.5, color='source'),
+            label_opts=opts.LabelOpts(position='top', color="#fe6f5e"),
+            focus_node_adjacency ='allEdges',
+            
+        )
+        .set_global_opts(
+            title_opts=opts.TitleOpts(
+                title="Effects of economic events to the model predictions", 
+                pos_bottom="0%",
+                title_textstyle_opts=opts.TextStyleOpts(color="#fe6f5e")
+                )
+        )
+
+    )
+    return sankey
+
+from pyecharts.charts import Bar, Grid, Line
+
+bar = (
+    Bar()
+    .add_xaxis(["{}/2".format(i) for i in range(1, 13)])
+    .add_yaxis(
+        "price",
+        [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
+        yaxis_index=0,
+        color="#d14a61",
+    )
+    .add_yaxis(
+        "events",
+        [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
+        yaxis_index=1,
+        color="#5793f3",
+    )
+    .extend_axis(
+        yaxis=opts.AxisOpts(
+            name="events",
+            type_="value",
+            min_=0,
+            max_=250,
+            position="right",
+            axisline_opts=opts.AxisLineOpts(
+                linestyle_opts=opts.LineStyleOpts(color="#d14a61")
+            ),
+            axislabel_opts=opts.LabelOpts(formatter="{value} ABC"),
+        )
+    )
+    .extend_axis(
+        yaxis=opts.AxisOpts(
+            type_="value",
+            name="",
+            min_=0,
+            max_=25,
+            position="left",
+            axisline_opts=opts.AxisLineOpts(
+                linestyle_opts=opts.LineStyleOpts(color="#675bba")
+            ),
+            axislabel_opts=opts.LabelOpts(formatter="{value} USD"),
+            splitline_opts=opts.SplitLineOpts(
+                is_show=True, linestyle_opts=opts.LineStyleOpts(opacity=1)
+            ),
+        )
+    )
+    .set_global_opts(
+        yaxis_opts=opts.AxisOpts(
+            name="events importance",
+            min_=0,
+            max_=250,
+            position="right",
+            offset=80,
+            axisline_opts=opts.AxisLineOpts(
+                linestyle_opts=opts.LineStyleOpts(color="#5793f3")
+            ),
+            axislabel_opts=opts.LabelOpts(formatter="{value} DEF"),
+        ),
+        title_opts=opts.TitleOpts(title="Grid-Overlap"),
+        tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
+        legend_opts=opts.LegendOpts(pos_left="25%"),
+    )
+)
+
+line = (
+    Line()
+    .add_xaxis(["{}/2".format(i) for i in range(1, 13)])
+    .add_yaxis(
+        "events sentiments",
+        [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2],
+        yaxis_index=2,
+        color="#675bba",
+        label_opts=opts.LabelOpts(is_show=False),
+    )
+)
+
+overlap_1 = bar.overlap(line)
+
+line1 = (
+    Line()
+    .add_xaxis(["{}/2".format(i) for i in range(1, 13)])
+    .add_yaxis(
+        " ",
+        [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2],
+        yaxis_index=2,
+        color="#675bba",
+        label_opts=opts.LabelOpts(is_show=False),
+    )
+)
+
+@site_obj.register_chart(title='diagram overlay',  catalog='Data Visualisation')
+def compo():
+    grid = (
+        Grid(init_opts=opts.InitOpts(width="1200px", height="800px"))
+        .add(
+            overlap_1, grid_opts=opts.GridOpts(pos_right="58%"), is_control_axis_index=True
+        )
+        .add(
+            line1, grid_opts=opts.GridOpts(pos_left="58%"), is_control_axis_index=True
+        )
+    )
+    return grid
+
+    
+
 
 
 

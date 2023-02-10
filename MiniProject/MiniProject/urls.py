@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from visual import separate_views
 from visual.views import site_obj
 
 urlpatterns = [
-    path('', include(site_obj.urls))
+    path('', include(site_obj.urls)),
+    path('dashboard/', separate_views.MyDashboardView.as_view())
 ]
