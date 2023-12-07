@@ -1,6 +1,7 @@
-pyecharts
-django
-django-echarts
+pyecharts~=1.9
+borax~=3.5
+django~=3.2
+django-echarts==0.5.2
 python-decouple
 pandas
 datetime
